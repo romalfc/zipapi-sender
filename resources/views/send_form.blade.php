@@ -16,13 +16,6 @@
   <body>
     @include('partials.navbar')
     <div class="container">
-    @if (isset($success))
-        <div class="alert alert-success">
-            <?php
-                print_r($success);
-            ?>
-        </div>
-    @endif
         {!! Form::open(array('class' => 'form-signin', 'files' => 'true')) !!}
             <h2 class="form-signin-heading">Sender API</h2>
             <ul>
@@ -45,6 +38,10 @@
                 <label for="zip">Select zip-archive
                     <input type="file" name="zip" class="form-control" placeholder="ZIP" required="" value=" ">
                 </label>
+                <label for="e_method">Select encryption method
+                    {!! Form::select('e_method', App\Helpers\Encryption::$ssl_methods); !!}
+                </label>      
+                <br><br>
                 <input type="hidden" value="create" name="type">
                 <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block">Send</button>
             @endif            

@@ -58,4 +58,5 @@
   </label><br>              
 </div>
 <input type="hidden" value="{{ $json }}" name="json">
+<input type="hidden" value="{{ $json_e }}" name="json_e">
 <input type="submit" value="Apply" name="apply" class="btn btn-lg btn-primary btn-block">
