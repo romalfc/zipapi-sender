@@ -7,6 +7,7 @@ use App\History;
 use App\Helpers\ZipToJson;
 use App\Helpers\Encryption;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\SendFormRequest;
 use Illuminate\Support\Facades\Redirect;
 
@@ -105,6 +106,7 @@ class SendController extends Controller
 			'Content-Type' => 'application/json',
 		];
 		$response = \Unirest\Request::post('http://receiver.api/json', $headers, json_encode($temp));
+        //dd($response->raw_body);
 		return $response->raw_body;
     }
 

@@ -54,14 +54,12 @@ class ZipToJson
 		//for encryption data
 		$structure_e = [];
 		$last_dir_e =& $structure_e;
-		$salt = '&&dg3hoc1i(*892j)F3;sfsfk_)(DK9)';
-		$key = substr(sha1($salt, true), 0, openssl_cipher_iv_length($ssl_method));
 	    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
 
 		for( $i = 0; $i < $za->numFiles; $i++ ){ 
 		    $stat = $za->statIndex( $i );
 
-		    if($stat['size'] == '0'){ //if size == 0 it's a folder
+		    if($stat['size'] == '0'){ //if size==  0 it's a folder
 		    	$ds = substr($stat['name'], -1); //getting directory separator
 		    	$folders = explode($ds, $stat['name']);
 			    $temp =& $structure;
@@ -72,7 +70,7 @@ class ZipToJson
 			    		$last_dir =& $temp[$folders[$a]];
 			    	}
 
-			    	$folder_e = Encryption::encrypt($folders[$a], $ssl_method, $key, $iv);
+			    	$folder_e = Encryption::encrypt($folders[$a], $ssl_method, $iv);
 			    	if(!isset($temp_e[$folder_e])){
 			    		$temp_e[$folder_e] = [];
 			    		$last_dir_e =& $temp_e[$folder_e];
@@ -84,19 +82,21 @@ class ZipToJson
 		    } else { //it's a file
 		    	array_push($last_dir, basename( $stat['name'] ));
 
-		    	$basename_e = Encryption::encrypt(basename( $stat['name'] ), $ssl_method, $key, $iv);
+		    	$basename_e = Encryption::encrypt(basename( $stat['name'] ), $ssl_method, $iv);
 		    	array_push($last_dir_e, $basename_e);
 		    }
 		}
 		unset($temp, $temp_e, $last_dir, $last_dir_e, $folders);
 
 		//saving encryption info to temp table
-		$temp_id = Temp::new($filename, $ssl_method, bin2hex($key), bin2hex($iv));		
+		//$temp_id = Temp::new($filename, $ssl_method, bin2hex($key), bin2hex($iv));		
 		return [
 			'structure' => $structure, 
 			'encrypted' => [
 				'array'  => $structure_e,
-				'temp_id'=> $temp_id,
+				'method_id'=> array_search($ssl_method, Encryption::$ssl_methods),
+				'hex_iv'   => bin2hex($iv),
+				'filename' => $filename
 			]
 		];
     }

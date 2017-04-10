@@ -28,6 +28,8 @@ class Encryption
         14 => 'RC4-40',
     ];
 
+    protected static $hex_key = '1e4f5b283a2cd91a8ff95064f776d633';
+
     /**
      * Encoding string with current ssl method and return encoded value
      * 
@@ -36,9 +38,9 @@ class Encryption
      * @param  string $iv     Initialization vector for encryption
      * @return string         Encoded string
      */
-    public static function encrypt($string, $method, $key, $iv)
+    public static function encrypt($string, $method, $iv)
     {
-        return openssl_encrypt($string, $method, $key, 0, $iv);
+        return openssl_encrypt($string, $method, hex2bin(self::$hex_key), 0, $iv);
     }
 
     /**
@@ -49,8 +51,8 @@ class Encryption
      * @param  string $iv     Initialization vector for encryption
      * @return string         Decoded string
      */
-    public static function decrypt($safe, $method, $key, $iv)
+    public static function decrypt($safe, $method, $iv)
     {
-        return openssl_decrypt($safe, $string, $method, $key, 0, $iv);
+        return openssl_decrypt($safe, $string, $method, hex2bin(self::$hex_key), 0, $iv);
     }
 }
